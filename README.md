@@ -1,2 +1,6 @@
-# multiprocess-counter.py
-Counter increase or decrease by mutiple child process in python
+# Multiprocess Counter in Python
+
+## Introduction
+
+Consider a python program that spawns multiple processes and each of these process want to increase (or decrease) a global counter.
+Repository contains multiple ways to doing it.
