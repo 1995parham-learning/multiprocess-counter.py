@@ -7,6 +7,7 @@ from multiprocessing import Pool
 import socket
 import threading
 import selectors
+import random
 
 class Counter:
     HOST: str = "127.0.0.1"
@@ -62,7 +63,8 @@ class Counter:
 
 def worker(name: str):
     cnt = Counter(name)
-    cnt.increase(10)
+    for _ in range(random.randint(1, 10)):
+        cnt.increase(10)
     print(f"I am {name} and doing some kind of important work in parallel")
 
 if __name__ == "__main__":
