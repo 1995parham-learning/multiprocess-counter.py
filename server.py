@@ -1,5 +1,17 @@
 '''
-The simplest implementation uses per-process counters, which are then aggregated in the main process.
+Client-server approach using UDP sockets.
+The main process runs a UDP server that listens for increment commands.
+Worker processes send increment requests over UDP to the server.
+
+Downsides:
+- UDP is unreliable — messages can be silently dropped under load, losing increments.
+- No synchronization guarantee — a sleep is needed before reading the final value,
+  which is fragile and doesn't guarantee all messages have been processed.
+- Hardcoded host/port makes it impossible to run multiple instances concurrently.
+- Overly complex for a shared counter — sockets, threads, selectors, and a custom
+  protocol are unnecessary when multiprocessing.Value + Lock solves this in a few lines.
+
+See shared.py for a more Pythonic approach using multiprocessing.Value.
 '''
 
 from __future__ import annotations
@@ -8,6 +20,7 @@ import socket
 import threading
 import selectors
 import random
+import time
 
 class Counter:
     HOST: str = "127.0.0.1"
@@ -65,6 +78,7 @@ def worker(name: str):
     cnt = Counter(name)
     for _ in range(random.randint(1, 10)):
         cnt.increase(10)
+    cnt.socket.close()
     print(f"I am {name} and doing some kind of important work in parallel")
 
 if __name__ == "__main__":
@@ -73,5 +87,7 @@ if __name__ == "__main__":
     with Pool(5) as p:
         p.map(worker, ["w-1", "w-2", "w-3"])
 
+    # Allow time for the server thread to process remaining UDP messages
+    time.sleep(0.5)
     print(main_cnt.value)
     main_cnt.close()
