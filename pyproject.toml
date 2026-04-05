@@ -1,0 +1,46 @@
+[project]
+name = "multiprocess-counter"
+version = "0.1.0"
+description = "Multiprocess counter implementations in Python"
+requires-python = ">=3.14"
+
+[dependency-groups]
+dev = ["ruff", "ty"]
+
+# ── Ruff (linter + formatter) ──────────────────────────
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes (unused imports, undefined names)
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade (modernize syntax)
+    "B",   # flake8-bugbear (common bug patterns)
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "RET", # flake8-return
+    "PTH", # flake8-use-pathlib
+    "RUF", # Ruff-specific rules
+]
+fixable = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+# ── ty (type checker) ──────────────────────────────────
+[tool.ty.environment]
+python-version = "3.14"
+
+[tool.ty.rules]
+possibly-unresolved-reference = "warn"
+possibly-missing-import = "warn"
+unused-ignore-comment = "warn"

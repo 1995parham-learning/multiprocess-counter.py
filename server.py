@@ -1,4 +1,4 @@
-'''
+"""
 Client-server approach using UDP sockets.
 The main process runs a UDP server that listens for increment commands.
 Worker processes send increment requests over UDP to the server.
@@ -12,15 +12,15 @@ Downsides:
   protocol are unnecessary when multiprocessing.Value + Lock solves this in a few lines.
 
 See shared.py for a more Pythonic approach using multiprocessing.Value.
-'''
+"""
 
-from __future__ import annotations
-from multiprocessing import Pool
+import random
+import selectors
 import socket
 import threading
-import selectors
-import random
 import time
+from multiprocessing import Pool
+
 
 class Counter:
     HOST: str = "127.0.0.1"
@@ -57,10 +57,9 @@ class Counter:
         sel.close()
         self.socket.close()
 
-
     def increase(self, value):
         if self.__is_client:
-            self.socket.sendto(f'INC {value}'.encode(), (self.HOST, self.PORT))
+            self.socket.sendto(f"INC {value}".encode(), (self.HOST, self.PORT))
         else:
             self.__counter += value
 
@@ -80,6 +79,7 @@ def worker(name: str):
         cnt.increase(10)
     cnt.socket.close()
     print(f"I am {name} and doing some kind of important work in parallel")
+
 
 if __name__ == "__main__":
     main_cnt = Counter()

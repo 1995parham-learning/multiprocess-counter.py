@@ -1,17 +1,19 @@
-'''
+"""
 Shared memory approach using multiprocessing.Value with a Lock.
 All worker processes directly increment a shared counter protected by a lock.
 This is the idiomatic Python way to share a simple counter across processes.
-'''
+"""
 
-from multiprocessing import Pool, Value, Lock
 import random
+from multiprocessing import Lock, Pool, Value
+from multiprocessing.sharedctypes import Synchronized
+from multiprocessing.synchronize import Lock as LockType
 
-counter: Value
-lock: Lock
+counter: Synchronized
+lock: LockType
 
 
-def init_worker(shared_counter: Value, shared_lock: Lock):
+def init_worker(shared_counter: Synchronized, shared_lock: LockType):
     global counter, lock
     counter = shared_counter
     lock = shared_lock
@@ -25,7 +27,7 @@ def worker(name: str):
 
 
 if __name__ == "__main__":
-    counter = Value('i', 0)
+    counter = Value("i", 0)
     lock = Lock()
 
     with Pool(5, initializer=init_worker, initargs=(counter, lock)) as p:

@@ -1,9 +1,10 @@
-'''
-The simplest implementation uses per-process counters, which are then aggregated in the main process.
-'''
+"""
+The simplest implementation uses per-process counters,
+which are then aggregated in the main process.
+"""
 
-from __future__ import annotations
 from multiprocessing import Pool
+
 
 class Counter:
     def __init__(self):
@@ -28,6 +29,7 @@ def worker(name: str) -> Counter:
     print(f"I am {name} and doing some kind of important work in parallel")
 
     return cnt
+
 
 if __name__ == "__main__":
     main_cnt = Counter()
